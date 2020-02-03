@@ -1,0 +1,140 @@
+bhuiyanS -- 2019-10-18 22:12
+Completed database schema for the blog site.
+
+bhuiyanS -- 2019-10-20 17:27
+Uploaded database schema to design.doc.
+Described the Python file that will interact with the database including examples of functions and their purposes.
+
+SPEW -- 2019-10-21 20:58
+SQLite join clauses are used query and match data from rows in different tables.
+SQLite databases can be relational - tables can be associated using foreign keys.
+We have access to the clauses: INNER JOIN, LEFT JOIN, and CROSS JOIN.
+They can be used to combine columns from related tables in different ways.
+
+Database:
+INNER JOIN: returns rows from the correlated tables based on a certain criteria, given that there is a corresponding row in ALL the correlated tables.
+  - Can be used to link the user_name from users table to blog_name from blogs table based on the user_id/blog_author_id so that only the names of users with existing blogs will be returned
+LEFT JOIN: returns rows from the correlated tables (A and B) based on a certain criteria, unlike INNER JOIN, if there is no corresponding row in B, the row in table B is filled with NULL (In short, all rows in table A will be included)
+  - Can be used to link blog_name from blogs table to entry_title from entries table baed on the blog_id/entry_blog so that the NULLs can signal if a blog does not have any entries.
+CROSS JOIN: return from the correlated tables by combines every row from one of the tables with every row from the second table
+
+Procedures/protocols to optimize our workflow:
+1. We work at home in our separate branch and come to school to have a code review and merge to master. This will
+prevent merge conflicts and ensure everyone is up-to-date with the current state of the code base.
+2. Functions should do as few things as possible. Someone using the function should not spend more than a few
+seconds reading the code/function name/function doc to understand what it does.
+3. The only style guide to follow is PEP. If PEP is the law.
+
+caoW -- 2019-10-21 21:25
+Corrected and cleared up questions/comments from today's review session:
+- Removed named routes since we did not learn it yet and there is no comment on it in the assignment page. We are
+just using a static route and handling different views sending GET requests.
+
+huangP -- 2019-10-22 17:09
+Added routes /, /login, /create-account, /home. The root route will redirect to /login if user is not logged in and to /home if user is logged in.
+/login loads the login.html page and checks the entered username and password with the database; if it matches the database, redirect to /home, else, flash error message retrieved from database
+/create-account loads create-account.html and checks to make sure passwords entered match and that username does not already exist; if there are no errors, user credentials are adde to database and redirect to /home, else flash error message.
+/home will be worked on later.
+
+caoW -- 2019-10-22 08:57
+Created initial files for project and set goals to complete the login system within two days.
+Created specification.txt to have backend and frontend work with each other more smoothly (frontend gives variables' type and content for backend to fillout)
+
+bhuiyanS -- 2019-10-22 09:25
+Created a login_db branch to work on database login functions.
+Created spews.db and users table using db_builder.py.
+
+bhuiyanS -- 2019-10-22 10:40
+Created addLogin and verifyLogin functions in db_manager.py and completed tests.
+
+bhuiyanS -- 2019-10-22 17:12
+Updated functions in db_manager.py to return appropriate response instead of printing.
+
+chenE -- 2019-10-22 17:39
+Created login.html and create-account.html
+
+bhuiyanS -- 2019-10-22 17:53
+Resolved issues stemming from changing print to return: Database now saves properly after function is called.
+
+caoW -- 2019-10-23 09:20
+Tried to debug issue with sqlite threading. (fixed by huangP)
+Continued updating design.doc to match state of project (filling in smaller details and changes to simplify code)
+
+chenE -- 2019-10-23 9:32
+Created navigator.html, and started on home.html
+Updated create-account.html by adding a return to login button
+
+huangP -- 2019-10-23 23:13
+Planned out the routes needed for the blog pages and listed functions that would be required to make the routes work
+
+chenE -- 2019-10-23 20:15
+Finished home.html and fixed navigator.html syntax
+
+caoW -- 2019-10-24 9:20
+Wrote out function headers for database with type hints based on huangP comments (see 2019-10-23 23:13).
+Made database function names consistent with rest of code base.
+
+chenE -- 2019-10-24 19:40
+Created blogs.html and entries.html according to design
+
+caoW -- 2019-10-24 20:01
+Updated README.md with new assignment details
+Updated design.doc:
+    Cleared up confusing routing in sitemap
+    Updated "Backend (Flask)" section to match what we discussed earlier today
+
+caoW -- 2019-10-24 21:09
+Fixed up frontend
+    Fixed home.html: Syntax error
+    Fixed entries.html: Use tuple instead of dictionary for simplicity, added names to submit button to differentiate between update/create/delete
+    Improved design.doc for blogs.html: Use tuple instead of dictionary, and use "<owner>'s blog" and "your blog" in header instead of just "<owner>'s blog"
+
+huangP -- 2019-10-27 15:57
+Made a check in /login and /create-account to prevent user from having empty usernames or password. Also fixed create-account.html so that it flashes an error message when it is supposed to.
+
+chenE -- 2019-10-27 18:31
+Added the code to flash errors onto blogs.html and entries.html
+
+bhuiyanS -- 2019-10-27 20:30
+Finished remaining db_manager.py functions: get_usernames_with_blogs(), get_blogs_for_username(username), create_blog_for_username(username, blog_title), get_entries_for_blog(blog_id), is_owner(username, blog_id), add_entry(entry_title, entry_content, blog_id), and remove_entry(entry_id).
+They all function correctly according to specification (designated by function signature and comment from template).
+Updated design.doc document.
+
+bhuiyanS -- 2019-10-27 20:52
+Added two functions - get_entry_id(entry_title, blog_id) and get_blog_id_from_title(username, blog_title) - to facilitate front end operations.
+Changed the input from remove_entry(blog_id) to remove_entry(entry_id) which the front end can get using the get_entry_id() function.
+
+bhuiyanS -- 2019-10-27 21:46
+Fixed issue where you could not create a new blog.
+
+huangP -- 2019-10-27 22:12
+Fixed bug that flashed an error that a blog already exists even though blog did not exist. Also fixed bug that allowed a user who is not the owner of the blogs create a blog. Finally fixed error in app.py due to an unknown variable.
+
+bhuiyanS -- 2019-10-27 22:15
+Fixed issue where you could not create a new entry.
+
+bhuiyanS -- 2019-10-27 23:04
+Fixed issue where anyone could edit an entry because the is_owner() function would always return True. Fixed bug in get_entry_id().
+
+huangP -- 2019-10-27 23:25
+Allowed messages to be flashed on entries page when the entry name repeats. Also have /blogs webpage display “Your Blog” instead of “Username’s Blog” when the owner of the blogs is logged in. and then fixed issue with “Your” replacing the username by accident.
+
+bhuiyanS -- 2019-10-27 23:27
+Implemented ORDER BY in SQL queries so blogs and entries would be ordered by most recently updated on the site.
+
+chenE -- 2019-10-27 23:33
+Added a home button on navigator.html
+
+caoW -- 2019-10-27 23:42
+Final update to design.pdf
+Debugged error if no entry exists for blog
+
+chenE -- 2019-10-28 09:06
+Added specifications.txt
+Updated login.html and create-account.html by masking the password fields.
+
+bhuiyanS -- 2019-10-28 09:52
+Added comments to db_builder.py and db_manager.py
+
+huangP -- 2019-10-28 11:42
+Finished adding comments to app.py and made the code more readable with better variable names. Also fixed bug pertaining to entries of another user's blog not showing up and having an empty entry title. 
